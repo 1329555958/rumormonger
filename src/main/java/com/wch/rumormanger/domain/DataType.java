@@ -1,5 +1,6 @@
 package com.wch.rumormanger.domain;
 
+import com.wch.rumormanger.entity.Columns;
 import com.wch.rumormanger.valueproducer.DateValueProducer;
 import com.wch.rumormanger.valueproducer.NumericValueProducer;
 import com.wch.rumormanger.valueproducer.StringValueProducer;
@@ -11,9 +12,9 @@ public enum DataType {
 
     VARCHAR(50),
     LONGBLOB(100),
-    CHAR(50),
-    BLOB(100),
-    TEXT(100),
+    CHAR(5),
+    BLOB(5),
+    TEXT(5),
 
     DATE(0),
     DATETIME(0),
@@ -22,9 +23,9 @@ public enum DataType {
     BIGINT(10),
     INT(5),
     SMALLINT(3),
-    DECIMAL(5),
+    DECIMAL(20),
     TINYINT(2),
-    DOUBLE(10);
+    DOUBLE(5);
     private int maxLength;
 
     DataType(int maxLength) {
@@ -41,17 +42,17 @@ public enum DataType {
     }
 
     /**
-     * @param maxLength
+     * @param
      * @return
      */
-    public ColumnValueProducer getValueProducer(Long maxLength) {
+    public ColumnValueProducer getValueProducer(Columns columns) {
         switch (this) {
             case VARCHAR:
             case LONGBLOB:
             case CHAR:
             case BLOB:
             case TEXT:
-                return new StringValueProducer().init(Math.min(maxLength.intValue(), this.getMaxLength()));
+                return new StringValueProducer().init(Math.min(columns.getCharacter_maximum_length().intValue(), this.getMaxLength()));
             case DATE:
             case DATETIME:
             case TIMESTAMP:
@@ -59,10 +60,11 @@ public enum DataType {
             case BIGINT:
             case INT:
             case SMALLINT:
-            case DECIMAL:
             case TINYINT:
+            case DECIMAL:
+                return new NumericValueProducer().init(Math.min(columns.getNumeric_precision().intValue() - columns.getNumeric_scale().intValue(), this.getMaxLength()));
             case DOUBLE:
-                return new NumericValueProducer().init(this.getMaxLength());
+                return new NumericValueProducer().init(Math.min(columns.getNumeric_precision().intValue(), this.getMaxLength()));
         }
         return null;
     }

@@ -28,7 +28,7 @@ public class Column {
         column.setAutoIncrement("auto_increment".equalsIgnoreCase(info.getExtra()));
         //auto increment column don't need value producer
         if (!column.isAutoIncrement()) {
-            column.setColumnValueProducer(column.getDataType().getValueProducer(info.getCharacter_maximum_length()));
+            column.setColumnValueProducer(column.getDataType().getValueProducer(info));
         }
         return column;
     }

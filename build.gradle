@@ -1,7 +1,21 @@
 group 'com.imooc'
 version '1.0-SNAPSHOT'
 
+buildscript {
+    repositories {
+        maven { url 'https://repo.spring.io/libs-milestone' }
+    }
+
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.0.M2'
+    }
+}
+
+apply plugin: 'org.springframework.boot'
+
+
 apply from: "$rootDir/dependencies.gradle"
+
 
 allprojects {
 
@@ -24,5 +38,14 @@ allprojects {
         compile libs.mysql
         testCompile libs.test
     }
+    jar {
+        manifest {
+            attributes 'Main-Class': 'com.wch.rumormanger.App'
+        }
+    }
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.4'
 }
